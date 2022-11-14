@@ -1,23 +1,32 @@
 import { store } from 'quasar/wrappers'
-import { InjectionKey } from 'vue'
+import { createPinia } from 'pinia'
 import { Router } from 'vue-router'
-import {
-  createStore,
-  Store as VuexStore,
-  useStore as vuexUseStore
-} from 'vuex'
+
+/*
+ * When adding new properties to stores, you should also
+ * extend the `PiniaCustomProperties` interface.
+ * @see https://pinia.vuejs.org/core-concepts/plugins.html#typing-new-store-properties
+ */
+declare module 'pinia' {
+  export interface PiniaCustomProperties {
+    readonly router: Router;
+  }
+}
+
+export default store((/* { ssrContext } */) => {
+  const pinia = createPinia()
+
+  // You can add Pinia plugins here
+  // pinia.use(SomePiniaPlugin)
+
+  return pinia
+})
+
+/*
+import user from './user'
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
 
 export interface StateInterface {
   // Define your own store structure, using submodules if needed
@@ -43,10 +52,10 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> = Symbol('vuex-ke
    }
  }
 
-export default store(function (/* { ssrContext } */) {
+export default store(function () {
   const Store = createStore<StateInterface>({
     modules: {
-      // example
+      user
     },
 
     // enable strict mode (adds overhead!)
@@ -60,3 +69,4 @@ export default store(function (/* { ssrContext } */) {
 export function useStore () {
   return vuexUseStore(storeKey)
 }
+*/
